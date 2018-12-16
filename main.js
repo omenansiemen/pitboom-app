@@ -21,7 +21,8 @@ function createWindow() {
     icon: './images/Pitboom_logo_nowhite.png',
     webPreferences: {
       preload: path.join(__dirname, 'dist/electron-renderer.bundle.js'),
-      nodeIntegration: false
+      nodeIntegration: false,
+      contextIsolation: true,
     },
     backgroundColor: '#31363b'
   })
