@@ -1,0 +1,48 @@
+{
+  "name": "pitboom-app",
+  "version": "1.0.2",
+  "description": "Desktop application for PitBoom",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "electron": "electron .",
+    "pack": "webpack --mode production --env.platform=electron && electron-builder --dir",
+    "dist": "webpack --mode production --env.platform=electron && electron-builder",
+    "distwin": "webpack --mode production --env.platform=electron && electron-builder --win",
+    "build": "webpack --mode production --env.prod",
+    "watch": "webpack --watch --mode development --env.dev"
+  },
+  "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "electron": "^4.0.0-beta.9",
+    "electron-builder": "^20.38.3",
+    "source-map-loader": "^0.2.4",
+    "ts-loader": "^5.3.1",
+    "typescript": "^3.2.2",
+    "webpack": "^4.27.1",
+    "webpack-cli": "^3.1.2"
+  },
+  "build": {
+    "appId": "play.pitboom.net",
+    "files": [
+      "!**/*",
+      "main.js",
+      "dist/electron-renderer.bundle.js"
+    ],
+    "mac": {
+      "category": "public.app-category.games"
+    },
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb",
+        "pacman"
+      ]
+    },
+    "win": {
+      "target": "NSIS"
+    }
+  },
+  "private": true
+}

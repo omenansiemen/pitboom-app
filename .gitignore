@@ -1,0 +1,7 @@
+node_modules
+tsjs
+typings
+csak-timelog.json
+launch.json
+.env
+dist
