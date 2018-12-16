@@ -45,7 +45,6 @@ function createWindow() {
       click: () => {
         const toggle = mainWindow.isFullScreen()
         mainWindow.setFullScreen(!toggle)
-        console.log('toggle')
       }
     },
     {
@@ -60,8 +59,14 @@ function createWindow() {
       accelerator: 'F8',
       click: () => {
         mainWindow.webContents.openDevTools()
-      }
-    }
+      },
+    },
+    {
+      label: 'Quit',
+      click: () => {
+        mainWindow.close()
+      },
+    },
   ]
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
@@ -74,16 +79,16 @@ function createWindow() {
       case 'show-window-inactive':
         mainWindow.showInactive()
         break
-      case 'toggle-full-screen':
-        const toggle = mainWindow.isFullScreen()
-        mainWindow.setFullScreen(!toggle)
-        break
-      case 'reload':
-        mainWindow.reload()
-        break
-      case 'dev-tools':
-        mainWindow.webContents.openDevTools()
-        break
+      // case 'toggle-full-screen':
+      //   const toggle = mainWindow.isFullScreen()
+      //   mainWindow.setFullScreen(!toggle)
+      //   break
+      // case 'reload':
+      //   mainWindow.reload()
+      //   break
+      // case 'dev-tools':
+      //   mainWindow.webContents.openDevTools()
+      //   break
     }
   })
 
