@@ -44,5 +44,6 @@
       "target": "NSIS"
     }
   },
-  "private": true
+  "private": true,
+  "homepage": "https://pitboom.net"
 }
