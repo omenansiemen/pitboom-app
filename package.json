@@ -45,5 +45,9 @@
     }
   },
   "private": true,
-  "homepage": "https://pitboom.net"
+  "homepage": "https://pitboom.net",
+  "repository": {
+    "type": "git",
+    "url": "tatu@pitboom:/home/git/pitboom-app.git"
+  }
 }
