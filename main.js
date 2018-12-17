@@ -22,7 +22,7 @@ function createWindow() {
     webPreferences: {
       preload: path.join(__dirname, 'dist/electron-renderer.bundle.js'),
       nodeIntegration: false,
-      contextIsolation: true,
+      contextIsolation: false, // Window control events won't work if set true, for example closing window
     },
     backgroundColor: '#31363b'
   })
@@ -79,16 +79,6 @@ function createWindow() {
       case 'show-window-inactive':
         mainWindow.showInactive()
         break
-      // case 'toggle-full-screen':
-      //   const toggle = mainWindow.isFullScreen()
-      //   mainWindow.setFullScreen(!toggle)
-      //   break
-      // case 'reload':
-      //   mainWindow.reload()
-      //   break
-      // case 'dev-tools':
-      //   mainWindow.webContents.openDevTools()
-      //   break
     }
   })
 
