@@ -79,16 +79,22 @@ function createWindow() {
       case 'show-window-inactive':
         mainWindow.showInactive()
         break
+      case 'get-app-version':
+        event.returnValue = app.getVersion()
+        break
+      case 'get-app-user-data-path':
+        event.returnValue = app.getPath('userData')
+        break
     }
   })
 
   const defaultProtocol = 'https'
   const defaultHost = 'pitboom.net'
   const defaultUrl = `${defaultProtocol}://${defaultHost}`
-  const url = process.env.pitboom_server ? process.env.pitboom_server : defaultUrl
+  const url = process.env.pitboomServerUrl ? process.env.pitboomServerUrl : defaultUrl
   mainWindow.loadURL(url)
   mainWindow.webContents.on('did-fail-load', () => {
-    if(url === defaultUrl) {
+    if (url === defaultUrl) {
       mainWindow.loadURL(`http://${defaultHost}`)
     }
   })
