@@ -15,7 +15,7 @@
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^4.0.0-beta.9",
+    "electron": "^4.0.0-beta.11",
     "electron-builder": "^20.38.4",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^5.3.1",
