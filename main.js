@@ -24,7 +24,8 @@ function createWindow() {
       nodeIntegration: false,
       contextIsolation: false, // Window control events won't work if set true, for example closing window
     },
-    backgroundColor: '#31363b'
+    backgroundColor: '#31363b',
+    // frame: false,
   })
 
   // Open the DevTools.
@@ -40,7 +41,7 @@ function createWindow() {
 
   const menuTemplate = [
     {
-      label: 'Full screen',
+      label: 'Fullscreen toggle',
       accelerator: 'F11',
       click: () => {
         const toggle = mainWindow.isFullScreen()
@@ -49,14 +50,12 @@ function createWindow() {
     },
     {
       label: 'Reload',
-      accelerator: 'F5',
       click: () => {
         mainWindow.reload()
       }
     },
     {
       label: 'Dev tools',
-      accelerator: 'F8',
       click: () => {
         mainWindow.webContents.openDevTools()
       },
@@ -70,6 +69,10 @@ function createWindow() {
   ]
   const menu = Menu.buildFromTemplate(menuTemplate);
   Menu.setApplicationMenu(menu);
+  // Accelerations won't work when menu is set null
+  // this is wanted behavior because events are fired from browser context
+  // otherwise actions will be run twice
+  mainWindow.setMenu(null)
 
   ipcMain.on('pitboom', (event, action) => {
     switch (action) {
@@ -78,6 +81,12 @@ function createWindow() {
         break
       case 'show-window-inactive':
         mainWindow.showInactive()
+        break
+      case 'close-window':
+        mainWindow.close()
+        break
+      case 'show-menu':
+        Menu.getApplicationMenu().popup()
         break
       case 'get-app-version':
         event.returnValue = app.getVersion()
@@ -88,10 +97,23 @@ function createWindow() {
     }
   })
 
+  ipcMain.on('accelerator', (_, action) => {
+    switch (action) {
+      case 'F11':
+        const toggle = mainWindow.isFullScreen()
+        mainWindow.setFullScreen(!toggle)
+        break
+      case 'F5':
+        mainWindow.reload()
+        break
+    }
+  })
+
   const defaultProtocol = 'https'
   const defaultHost = 'pitboom.net'
   const defaultUrl = `${defaultProtocol}://${defaultHost}`
   const url = process.env.pitboomServerUrl ? process.env.pitboomServerUrl : defaultUrl
+  console.log('Server url', url)
   mainWindow.loadURL(url)
   mainWindow.webContents.on('did-fail-load', () => {
     if (url === defaultUrl) {
