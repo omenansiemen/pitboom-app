@@ -7,20 +7,20 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "electron": "electron .",
     "pack": "webpack --mode production --env.platform=electron && electron-builder --dir",
-    "dist": "webpack --mode production --env.platform=electron && electron-builder",
-    "distwin": "webpack --mode production --env.platform=electron && electron-builder --win",
+    "dist": "npm ci && webpack --mode production --env.platform=electron && electron-builder",
+    "distwin": "npm ci && webpack --mode production --env.platform=electron && electron-builder --win",
     "build": "webpack --mode production --env.prod",
     "watch": "webpack --watch --mode development --env.dev"
   },
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^4.0.0-beta.11",
+    "electron": "^4.0.0",
     "electron-builder": "^20.38.4",
     "source-map-loader": "^0.2.4",
-    "ts-loader": "^5.3.1",
+    "ts-loader": "^5.3.2",
     "typescript": "^3.2.2",
-    "webpack": "^4.28.1",
+    "webpack": "^4.28.2",
     "webpack-cli": "^3.1.2"
   },
   "build": {
