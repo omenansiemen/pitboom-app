@@ -4,6 +4,7 @@ const {
   BrowserWindow,
   ipcMain,
   Menu,
+  ipcRenderer,
 } = require('electron')
 const path = require('path')
 
@@ -41,30 +42,39 @@ function createWindow() {
 
   const menuTemplate = [
     {
-      label: 'Fullscreen toggle',
+      label: 'Start',
+      accelerator: 'F8',
+      click: () => {
+        mainWindow.webContents.send('start')
+      },
+    },
+    {
+      label: 'Toggle Chat',
+      accelerator: 'F9',
+      click: () => {
+        mainWindow.webContents.send('toggle-chat')
+      },
+    },
+    {
+      role: 'toggleFullScreen',
       accelerator: 'F11',
-      click: () => {
-        const toggle = mainWindow.isFullScreen()
-        mainWindow.setFullScreen(!toggle)
-      }
+      registerAccelerator: false,
     },
     {
-      label: 'Reload',
-      click: () => {
-        mainWindow.reload()
-      }
-    },
-    {
-      label: 'Dev tools',
-      click: () => {
-        mainWindow.webContents.openDevTools()
-      },
-    },
-    {
-      label: 'Quit',
-      click: () => {
-        mainWindow.close()
-      },
+      label: 'Dev',
+      submenu: [
+        {
+          label: 'Dev tools',
+          click: () => {
+            mainWindow.webContents.openDevTools()
+          },
+        },
+        { role: 'forceReload' },
+        { role: 'zoomIn' },
+        { role: 'zoomOut' },
+        { role: 'resetZoom' },
+        { role: 'quit' },
+      ]
     },
   ]
   const menu = Menu.buildFromTemplate(menuTemplate);
