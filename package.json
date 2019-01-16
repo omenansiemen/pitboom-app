@@ -16,11 +16,11 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "electron": "^4.0.1",
-    "electron-builder": "^20.38.4",
+    "electron-builder": "^20.38.5",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^5.3.3",
     "typescript": "^3.2.2",
-    "webpack": "^4.28.3",
+    "webpack": "^4.28.4",
     "webpack-cli": "^3.2.1"
   },
   "build": {
