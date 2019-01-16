@@ -28,7 +28,8 @@
     "files": [
       "!**/*",
       "main.js",
-      "dist/electron-renderer.bundle.js"
+      "dist/electron-renderer.bundle.js",
+      "node_modules"
     ],
     "mac": {
       "category": "public.app-category.games"
