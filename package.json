@@ -49,5 +49,8 @@
   "repository": {
     "type": "git",
     "url": "tatu@pitboom:/home/git/pitboom-app.git"
+  },
+  "dependencies": {
+    "electron-prompt": "^1.3.0"
   }
 }

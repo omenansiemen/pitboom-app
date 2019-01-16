@@ -7,6 +7,7 @@ const {
   ipcRenderer,
 } = require('electron')
 const path = require('path')
+const prompt = require('electron-prompt')
 
 // app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
@@ -64,6 +65,12 @@ function createWindow() {
       label: 'Dev',
       submenu: [
         {
+          label: 'Server URL...',
+          click: () => {
+            promptServerUrl('https://', mainWindow)
+          },
+        },
+        {
           label: 'Dev tools',
           click: () => {
             mainWindow.webContents.openDevTools()
@@ -98,12 +105,18 @@ function createWindow() {
       case 'show-menu':
         Menu.getApplicationMenu().popup()
         break
+      case 'prompt-server-url':
+        promptServerUrl('https://', mainWindow)
+        break
       case 'get-app-version':
         event.returnValue = app.getVersion()
         break
       case 'get-app-user-data-path':
         event.returnValue = app.getPath('userData')
         break
+      default:
+        // Some event
+        console.warn('pitboom', action)
     }
   })
 
@@ -123,12 +136,15 @@ function createWindow() {
   const defaultHost = 'pitboom.net'
   const defaultUrl = `${defaultProtocol}://${defaultHost}`
   const url = process.env.pitboomServerUrl ? process.env.pitboomServerUrl : defaultUrl
-  console.log('Server url', url)
   mainWindow.loadURL(url)
+  let numberOfFails = 0
   mainWindow.webContents.on('did-fail-load', () => {
-    if (url === defaultUrl) {
+    if (numberOfFails > 1) {
+      promptServerUrl(defaultUrl, mainWindow)
+    } else if (url === defaultUrl) {
       mainWindow.loadURL(`http://${defaultHost}`)
     }
+    numberOfFails++
   })
   mainWindow.webContents.on('did-finish-load', () => {
     // Tässä voidaan poistaa splash screen sitten kun sellain on tehty
@@ -157,5 +173,21 @@ app.on('activate', function () {
   }
 })
 
-// In this file you can include the rest of your app's specific main process
-// code. You can also put them in separate files and require them here.
+const promptServerUrl = (url, mainWindow) => {
+  prompt({
+    title: 'Pitboom server URL',
+    label: 'URL:',
+    value: url,
+    inputAttrs: {
+      type: 'url'
+    }
+  }, mainWindow)
+    .then((r) => {
+      if (r === null) {
+        console.log('user cancelled');
+      } else {
+        mainWindow.loadURL(r)
+      }
+    })
+    .catch(console.error);
+}
