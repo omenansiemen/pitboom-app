@@ -19,6 +19,7 @@ const defaultProtocol = 'https'
 const defaultHost = 'pitboom.net'
 const defaultUrl = `${defaultProtocol}://${defaultHost}/`
 const serverUrlFilePath = `${app.getPath('userData')}/serverURL`
+let serverUrlReadFromFile = ''
 
 function createWindow() {
 	// Create the browser window.
@@ -115,11 +116,14 @@ function createWindow() {
 				break
 			case 'DOMContentLoaded':
 				const url = mainWindow.webContents.getURL()
-				fs.writeFile(serverUrlFilePath, url, (err) => {
-					if (err) {
-						dialog.showErrorBox('Server URL save failed', err.message)
-					}
-				})
+				if (url !== serverUrlReadFromFile) {
+					// Updating server url
+					fs.writeFile(serverUrlFilePath, url, (err) => {
+						if (err) {
+							dialog.showErrorBox('Server URL save failed', err.message)
+						}
+					})
+				}
 				break
 			case 'get-app-version':
 				event.returnValue = app.getVersion()
@@ -149,6 +153,7 @@ function createWindow() {
 		let url = process.env.pitboomServerUrl ? process.env.pitboomServerUrl : defaultUrl
 		if (err === null && data.length > 0) {
 			url = data.toString()
+			serverUrlReadFromFile = url
 		}
 		mainWindow.loadURL(url)
 	})
