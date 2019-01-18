@@ -4,11 +4,13 @@ const {
 	BrowserWindow,
 	ipcMain,
 	Menu,
-	dialog,
 } = require('electron')
 const path = require('path')
 const prompt = require('electron-prompt')
 const fs = require('fs')
+const Store = require('electron-store')
+const store = new Store()
+
 // app.commandLine.appendSwitch('disable-renderer-backgrounding')
 
 // Keep a global reference of the window object, if you don't, the window will
@@ -18,8 +20,6 @@ let mainWindow
 const defaultProtocol = 'https'
 const defaultHost = 'pitboom.net'
 const defaultUrl = `${defaultProtocol}://${defaultHost}/`
-const serverUrlFilePath = `${app.getPath('userData')}/serverURL`
-let serverUrlReadFromFile = ''
 
 function createWindow() {
 	// Create the browser window.
@@ -73,7 +73,7 @@ function createWindow() {
 				{
 					label: 'Server URL...',
 					click: () => {
-						promptServerUrl('https://', mainWindow)
+						promptServerUrl(mainWindow)
 					},
 				},
 				{
@@ -112,17 +112,13 @@ function createWindow() {
 				Menu.getApplicationMenu().popup()
 				break
 			case 'prompt-server-url':
-				promptServerUrl('https://', mainWindow)
+				promptServerUrl(mainWindow)
 				break
 			case 'DOMContentLoaded':
 				const url = mainWindow.webContents.getURL()
-				if (url !== serverUrlReadFromFile) {
+				if (url !== store.get('server.url')) {
 					// Updating server url
-					fs.writeFile(serverUrlFilePath, url, (err) => {
-						if (err) {
-							dialog.showErrorBox('Server URL save failed', err.message)
-						}
-					})
+					store.set('server.url', url)
 				}
 				break
 			case 'get-app-version':
@@ -149,19 +145,13 @@ function createWindow() {
 		}
 	})
 
-	fs.readFile(serverUrlFilePath, (err, data) => {
-		let url = process.env.pitboomServerUrl ? process.env.pitboomServerUrl : defaultUrl
-		if (err === null && data.length > 0) {
-			url = data.toString()
-			serverUrlReadFromFile = url
-		}
-		mainWindow.loadURL(url)
-	})
+	const url = store.get('server.url', defaultUrl)
+	mainWindow.loadURL(url)
 
 	let numberOfFails = 0
 	mainWindow.webContents.on('did-fail-load', () => {
 		if (numberOfFails > 1) {
-			promptServerUrl(defaultUrl, mainWindow)
+			promptServerUrl(mainWindow, defaultUrl)
 		} else {
 			mainWindow.loadURL(defaultUrl)
 		}
@@ -194,14 +184,18 @@ app.on('activate', function () {
 	}
 })
 
-const promptServerUrl = (url, mainWindow) => {
+const promptServerUrl = (mainWindow, url) => {
+	if(typeof url === 'undefined') {
+		url = mainWindow.webContents.getURL()
+	}
 	prompt({
 		title: 'Pitboom server URL',
-		label: 'URL:',
-		value: mainWindow.webContents.getURL(),
+		value: url,
 		inputAttrs: {
 			type: 'url'
-		}
+		},
+		height: 120,
+		customStylesheet: path.join(__dirname, 'public/prompt.css'),
 	}, mainWindow)
 		.then((r) => {
 			if (r === null) {
