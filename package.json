@@ -1,11 +1,11 @@
 {
   "name": "pitboom",
-  "version": "1.5.4",
+  "version": "1.5.5",
   "description": "Desktop application for PitBoom",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "electron": "electron .",
+    "electron": "electron --no-sandbox .",
     "pack": "webpack --mode production --env.platform=electron && electron-builder --dir",
     "dist": "npm ci && webpack --mode production --env.platform=electron && electron-builder",
     "distwin": "npm ci && webpack --mode production --env.platform=electron && electron-builder --win",
@@ -15,7 +15,7 @@
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^4.0.2",
+    "electron": "^4.0.3",
     "electron-builder": "^20.38.5",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^5.3.3",

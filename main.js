@@ -11,7 +11,7 @@ const fs = require('fs')
 const Store = require('electron-store')
 const store = new Store()
 
-// app.commandLine.appendSwitch('disable-renderer-backgrounding')
+// app.commandLine.hasSwitch('no-sandbox')
 
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
@@ -31,6 +31,7 @@ function createWindow() {
 			preload: path.join(__dirname, 'dist/electron-renderer.bundle.js'),
 			nodeIntegration: false,
 			contextIsolation: false, // Window control events won't work if set true, for example closing window
+			backgroundThrottling: false,
 		},
 		backgroundColor: '#31363b',
 		// frame: false,
