@@ -19,7 +19,9 @@ let mainWindow
 
 const defaultProtocol = 'https'
 const defaultHost = 'pitboom.net'
-const defaultUrl = `${defaultProtocol}://${defaultHost}/`
+const productionUrl = `${defaultProtocol}://${defaultHost}/`
+const experimentalUrl = `${defaultProtocol}://experimental.${defaultHost}/`
+const devUrl = `${defaultProtocol}://dev.${defaultHost}/`
 
 function createWindow() {
 	// Create the browser window.
@@ -72,10 +74,36 @@ function createWindow() {
 			label: 'Dev',
 			submenu: [
 				{
-					label: 'Server URL...',
-					click: () => {
-						promptServerUrl(mainWindow)
-					},
+					label: 'Version',
+					submenu: [
+						{
+							id: 'production',
+							type: 'radio',
+							label: 'Production',
+							checked: store.get('server.type.production', true),
+							click: function () {
+								mainWindow.loadURL(productionUrl)
+							}
+						},
+						{
+							id: 'dev',
+							type: 'radio',
+							label: 'Development',
+							checked: store.get('server.type.development', false),
+							click: function () {
+								mainWindow.loadURL(devUrl)
+							}
+						},
+						{
+							id: 'experimental',
+							type: 'radio',
+							label: 'Experimental',
+							checked: store.get('server.type.experimental', false),
+							click: function () {
+								mainWindow.loadURL(experimentalUrl)
+							}
+						},
+					]
 				},
 				{
 					label: 'Dev tools',
@@ -112,14 +140,32 @@ function createWindow() {
 			case 'show-menu':
 				Menu.getApplicationMenu().popup()
 				break
-			case 'prompt-server-url':
-				promptServerUrl(mainWindow)
-				break
+			// case 'prompt-server-url':
+			// 	promptServerUrl(mainWindow)
+			// 	break
 			case 'DOMContentLoaded':
 				const url = mainWindow.webContents.getURL()
 				if (url !== store.get('server.url')) {
 					// Updating server url
 					store.set('server.url', url)
+					// config.json
+					// { "server": { "url": "http://pitboom.net/" } }
+					if (url === experimentalUrl) {
+						store.set('server.type.experimental', true)
+						store.set('server.type.production', false)
+						store.set('server.type.development', false)
+					} else if (url === devUrl) {
+						store.set('server.type.experimental', false)
+						store.set('server.type.production', false)
+						store.set('server.type.development', true)
+					} else {
+						store.set('server.type.experimental', false)
+						store.set('server.type.production', true)
+						store.set('server.type.development', false)
+					}
+				} else {
+					const item = menu.getMenuItemById('production')
+					item.checked = true
 				}
 				break
 			case 'get-app-version':
@@ -146,15 +192,15 @@ function createWindow() {
 		}
 	})
 
-	const url = store.get('server.url', defaultUrl)
+	const url = store.get('server.url', productionUrl)
 	mainWindow.loadURL(url)
 
 	let numberOfFails = 0
 	mainWindow.webContents.on('did-fail-load', () => {
 		if (numberOfFails > 1) {
-			promptServerUrl(mainWindow, defaultUrl)
+			// promptServerUrl(mainWindow, productionUrl)
 		} else {
-			mainWindow.loadURL(defaultUrl)
+			mainWindow.loadURL(productionUrl)
 		}
 		numberOfFails++
 	})
@@ -186,7 +232,7 @@ app.on('activate', function () {
 })
 
 const promptServerUrl = (mainWindow, url) => {
-	if(typeof url === 'undefined') {
+	if (typeof url === 'undefined') {
 		url = mainWindow.webContents.getURL()
 	}
 	prompt({
@@ -196,7 +242,7 @@ const promptServerUrl = (mainWindow, url) => {
 			type: 'url'
 		},
 		height: 120,
-		customStylesheet: path.join(__dirname, 'public/prompt.css'),
+		// customStylesheet: path.join(__dirname, 'public/prompt.css'),
 	}, mainWindow)
 		.then((r) => {
 			if (r === null) {
