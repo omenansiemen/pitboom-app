@@ -80,16 +80,14 @@ function createWindow() {
 							id: 'production',
 							type: 'radio',
 							label: 'Production',
-							checked: store.get('server.type.production', true),
 							click: function () {
 								mainWindow.loadURL(productionUrl)
 							}
 						},
 						{
-							id: 'dev',
+							id: 'development',
 							type: 'radio',
 							label: 'Development',
-							checked: store.get('server.type.development', false),
 							click: function () {
 								mainWindow.loadURL(devUrl)
 							}
@@ -98,7 +96,6 @@ function createWindow() {
 							id: 'experimental',
 							type: 'radio',
 							label: 'Experimental',
-							checked: store.get('server.type.experimental', false),
 							click: function () {
 								mainWindow.loadURL(experimentalUrl)
 							}
@@ -145,28 +142,22 @@ function createWindow() {
 			// 	break
 			case 'DOMContentLoaded':
 				const url = mainWindow.webContents.getURL()
-				if (url !== store.get('server.url')) {
-					// Updating server url
-					store.set('server.url', url)
-					// config.json
-					// { "server": { "url": "http://pitboom.net/" } }
-					if (url === experimentalUrl) {
-						store.set('server.type.experimental', true)
-						store.set('server.type.production', false)
-						store.set('server.type.development', false)
-					} else if (url === devUrl) {
-						store.set('server.type.experimental', false)
-						store.set('server.type.production', false)
-						store.set('server.type.development', true)
-					} else {
-						store.set('server.type.experimental', false)
-						store.set('server.type.production', true)
-						store.set('server.type.development', false)
-					}
+				// Updating server url
+				store.set('server.url', url)
+				// config.json
+				// { "server": { "url": "http://pitboom.net/" } }
+				let item
+				if (url === experimentalUrl) {
+					store.set('server.id', 'experimental')
+					item = menu.getMenuItemById('experimental')
+				} else if (url === devUrl) {
+					store.set('server.id', 'development')
+					item = menu.getMenuItemById('development')
 				} else {
-					const item = menu.getMenuItemById('production')
-					item.checked = true
+					store.set('server.id', 'production')
+					item = menu.getMenuItemById('production')
 				}
+				item.checked = true
 				break
 			case 'get-app-version':
 				event.returnValue = app.getVersion()
@@ -204,7 +195,7 @@ function createWindow() {
 		}
 		numberOfFails++
 	})
-	mainWindow.webContents.on('did-finish-load', () => {
+	mainWindow.webContents.on('did-finish-load', (event) => {
 		// Tässä voidaan poistaa splash screen sitten kun sellain on tehty
 	})
 }
