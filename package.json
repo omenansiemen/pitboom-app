@@ -1,6 +1,6 @@
 {
   "name": "pitboom",
-  "version": "1.6.4",
+  "version": "1.6.5",
   "description": "Desktop application for PitBoom",
   "main": "main.js",
   "scripts": {
