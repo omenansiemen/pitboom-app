@@ -6,8 +6,7 @@ const {
 	Menu,
 } = require('electron')
 const path = require('path')
-const prompt = require('electron-prompt')
-const fs = require('fs')
+// const prompt = require('electron-prompt')
 const Store = require('electron-store')
 const store = new Store()
 
@@ -222,25 +221,25 @@ app.on('activate', function () {
 	}
 })
 
-const promptServerUrl = (mainWindow, url) => {
-	if (typeof url === 'undefined') {
-		url = mainWindow.webContents.getURL()
-	}
-	prompt({
-		title: 'Pitboom server URL',
-		value: url,
-		inputAttrs: {
-			type: 'url'
-		},
-		height: 120,
-		// customStylesheet: path.join(__dirname, 'public/prompt.css'),
-	}, mainWindow)
-		.then((r) => {
-			if (r === null) {
-				console.log('user cancelled');
-			} else {
-				mainWindow.loadURL(r)
-			}
-		})
-		.catch(console.error);
-}
+// const promptServerUrl = (mainWindow, url) => {
+// 	if (typeof url === 'undefined') {
+// 		url = mainWindow.webContents.getURL()
+// 	}
+// 	prompt({
+// 		title: 'Pitboom server URL',
+// 		value: url,
+// 		inputAttrs: {
+// 			type: 'url'
+// 		},
+// 		height: 120,
+// 		// customStylesheet: path.join(__dirname, 'public/prompt.css'),
+// 	}, mainWindow)
+// 		.then((r) => {
+// 			if (r === null) {
+// 				console.log('user cancelled');
+// 			} else {
+// 				mainWindow.loadURL(r)
+// 			}
+// 		})
+// 		.catch(console.error);
+// }
