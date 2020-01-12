@@ -17,12 +17,12 @@
   "license": "UNLICENSED",
   "devDependencies": {
     "electron": "^8.0.0-beta.5",
-    "electron-builder": "^20.44.4",
+    "electron-builder": "^21.2.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.2.1",
-    "typescript": "^3.6.4",
-    "webpack": "^4.41.2",
-    "webpack-cli": "^3.3.9"
+    "typescript": "^3.7.4",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10"
   },
   "build": {
     "appId": "play.pitboom.net",
