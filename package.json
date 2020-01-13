@@ -10,6 +10,7 @@
     "dist": "npm ci && webpack --mode production --env.platform=electron && electron-builder",
     "dist:win": "npm ci && webpack --mode production --env.platform=electron && electron-builder --win",
     "dist:mac": "npm ci && webpack --mode production --env.platform=electron && electron-builder --mac",
+    "dist:linux": "npm ci && webpack --mode production --env.platform=electron && electron-builder --linux",
     "build": "webpack --mode production --env.prod",
     "watch": "webpack --watch --mode development --env.dev"
   },
