@@ -51,27 +51,22 @@ function createWindow() {
 
 	const menuTemplate = [
 		{
-			label: 'Start',
-			accelerator: 'F8',
-			click: () => {
-				mainWindow.webContents.send('start')
-			},
-		},
-		{
-			label: 'Toggle Chat',
-			accelerator: 'F9',
-			click: () => {
-				mainWindow.webContents.send('toggle-chat')
-			},
-		},
-		{
-			role: 'toggleFullScreen',
-			accelerator: 'F11',
-			registerAccelerator: false,
-		},
-		{
-			label: 'Dev',
+			label: 'Game',
 			submenu: [
+				{
+					label: 'Start',
+					accelerator: 'F8',
+					click: () => {
+						mainWindow.webContents.send('start')
+					},
+				},
+				{
+					label: 'Toggle Chat',
+					accelerator: 'F9',
+					click: () => {
+						mainWindow.webContents.send('toggle-chat')
+					},
+				},
 				{
 					label: 'Version',
 					submenu: [
@@ -101,18 +96,19 @@ function createWindow() {
 						},
 					]
 				},
-				{
-					label: 'Dev tools',
-					click: () => {
-						mainWindow.webContents.openDevTools()
-					},
-				},
-				{ role: 'forceReload' },
-				{ role: 'zoomIn' },
-				{ role: 'zoomOut' },
-				{ role: 'resetZoom' },
-				{ role: 'quit' },
 			]
+		},
+		{
+			role: 'editMenu'
+		},
+		{
+			role: 'viewMenu'
+		},
+		{
+			role: 'windowMenu'
+		},
+		{
+			role: 'quit'
 		},
 	]
 	const menu = Menu.buildFromTemplate(menuTemplate);
