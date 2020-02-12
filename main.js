@@ -4,6 +4,7 @@ const {
 	BrowserWindow,
 	ipcMain,
 	Menu,
+	dialog,
 } = require('electron')
 const path = require('path')
 // const prompt = require('electron-prompt')
@@ -15,19 +16,22 @@ const store = new Store()
 // Keep a global reference of the window object, if you don't, the window will
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow
+let showExitPrompt = true
+let readablePlayTime = 'too little'
 
 const defaultProtocol = 'https'
 const defaultHost = 'pitboom.net'
 const productionUrl = `${defaultProtocol}://${defaultHost}/`
-const experimentalUrl = `${defaultProtocol}://experimental.${defaultHost}/`
-const devUrl = `${defaultProtocol}://dev.${defaultHost}/`
 
-function createWindow() {
+// This method will be called when Electron has finished
+// initialization and is ready to create browser windows.
+// Some APIs can only be used after this event occurs.
+app.on('ready', () => {
 	// Create the browser window.
 	mainWindow = new BrowserWindow({
 		width: 1847,
 		height: 1035,
-		icon: './images/Pitboom_logo_nowhite.png',
+		icon: path.join(__dirname, 'public/Pitboom_logo_nowhite.png'),
 		webPreferences: {
 			preload: path.join(__dirname, 'dist/electron-renderer.bundle.js'),
 			nodeIntegration: false,
@@ -38,15 +42,33 @@ function createWindow() {
 		// frame: false,
 	})
 
-	// Open the DevTools.
-	// mainWindow.webContents.openDevTools()
-
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
 		// Dereference the window object, usually you would store windows
 		// in an array if your app supports multi windows, this is the time
 		// when you should delete the corresponding element.
 		mainWindow = null
+	})
+
+	mainWindow.on('close', (e) => {
+		if (showExitPrompt) {
+			e.preventDefault() // Prevents the window from closing 
+			dialog.showMessageBox({
+				type: 'question',
+				buttons: ['Yes', 'No'],
+				title: 'Confirm',
+				message: `You have played ${readablePlayTime}! Really want to quit?`,
+				icon: path.join(__dirname, 'public/Pitboom_logo_nowhite.png'),
+			}).then(data => {
+				if (data.response === 0) {
+					showExitPrompt = false
+					mainWindow.close()
+				}
+			}).catch(() => {
+				showExitPrompt = false
+				mainWindow.close()
+			})
+		}
 	})
 
 	const menuTemplate = [
@@ -59,53 +81,25 @@ function createWindow() {
 					click: () => {
 						mainWindow.webContents.send('start')
 					},
+					// https://github.com/electron/electron/pull/18985
+					registerAccelerator: false // F8 key up listener in pb code
 				},
 				{
 					label: 'Toggle Chat',
-					accelerator: 'F9',
+					// accelerator: 'F9',
 					click: () => {
 						mainWindow.webContents.send('toggle-chat')
 					},
+					// https://github.com/electron/electron/pull/18985
+					registerAccelerator: false // F9 key up listener in pb code
 				},
 				{
-					label: 'Version',
-					submenu: [
-						{
-							id: 'production',
-							type: 'radio',
-							label: 'Production',
-							click: function () {
-								mainWindow.loadURL(productionUrl)
-							}
-						},
-						{
-							id: 'development',
-							type: 'radio',
-							label: 'Development',
-							click: function () {
-								mainWindow.loadURL(devUrl)
-							}
-						},
-						{
-							id: 'experimental',
-							type: 'radio',
-							label: 'Experimental',
-							click: function () {
-								mainWindow.loadURL(experimentalUrl)
-							}
-						},
-					]
+					role: 'toggleFullScreen',
+				},
+				{
+					role: 'editMenu'
 				},
 			]
-		},
-		{
-			role: 'editMenu'
-		},
-		{
-			role: 'viewMenu'
-		},
-		{
-			role: 'windowMenu'
 		},
 		{
 			role: 'quit'
@@ -118,7 +112,7 @@ function createWindow() {
 	// otherwise actions will be run twice
 	mainWindow.setMenu(null)
 
-	ipcMain.on('pitboom', (event, action) => {
+	ipcMain.on('pitboom', (event, action, data) => {
 		switch (action) {
 			case 'show-window':
 				mainWindow.show()
@@ -141,18 +135,6 @@ function createWindow() {
 				store.set('server.url', url)
 				// config.json
 				// { "server": { "url": "http://pitboom.net/" } }
-				let item
-				if (url === experimentalUrl) {
-					store.set('server.id', 'experimental')
-					item = menu.getMenuItemById('experimental')
-				} else if (url === devUrl) {
-					store.set('server.id', 'development')
-					item = menu.getMenuItemById('development')
-				} else {
-					store.set('server.id', 'production')
-					item = menu.getMenuItemById('production')
-				}
-				item.checked = true
 				break
 			case 'get-app-version':
 				event.returnValue = app.getVersion()
@@ -160,21 +142,24 @@ function createWindow() {
 			case 'get-app-user-data-path':
 				event.returnValue = app.getPath('userData')
 				break
-			default:
-				// Some event
-				console.warn('pitboom', action)
-		}
-	})
-
-	ipcMain.on('accelerator', (_, action) => {
-		switch (action) {
-			case 'F11':
+			case 'version':
+				mainWindow.loadURL(data)
+				break
+			case 'electron':
+				if (data === 'devtools') {
+					mainWindow.webContents.openDevTools()
+				}
+				break
+			case 'play-time':
+				readablePlayTime = data
+				break
+			case 'full-screen':
 				const toggle = mainWindow.isFullScreen()
 				mainWindow.setFullScreen(!toggle)
 				break
-			case 'F5':
-				mainWindow.reload()
-				break
+			default:
+				// Some event
+				console.warn('pitboom', action)
 		}
 	})
 
@@ -193,49 +178,13 @@ function createWindow() {
 	mainWindow.webContents.on('did-finish-load', (event) => {
 		// Tässä voidaan poistaa splash screen sitten kun sellain on tehty
 	})
-}
-
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow)
+})
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {
 	// On OS X it is common for applications and their menu bar
 	// to stay active until the user quits explicitly with Cmd + Q
-	if (process.platform !== 'darwin') {
-		app.quit()
-	}
+	if (process.platform !== 'darwin') { }
+	// I want to quit the app! It is annoying when stays background until explicitly closed. So APPLE, Fuck you! 🖕
+	app.quit()
 })
-
-app.on('activate', function () {
-	// On OS X it's common to re-create a window in the app when the
-	// dock icon is clicked and there are no other windows open.
-	if (mainWindow === null) {
-		createWindow()
-	}
-})
-
-// const promptServerUrl = (mainWindow, url) => {
-// 	if (typeof url === 'undefined') {
-// 		url = mainWindow.webContents.getURL()
-// 	}
-// 	prompt({
-// 		title: 'Pitboom server URL',
-// 		value: url,
-// 		inputAttrs: {
-// 			type: 'url'
-// 		},
-// 		height: 120,
-// 		// customStylesheet: path.join(__dirname, 'public/prompt.css'),
-// 	}, mainWindow)
-// 		.then((r) => {
-// 			if (r === null) {
-// 				console.log('user cancelled');
-// 			} else {
-// 				mainWindow.loadURL(r)
-// 			}
-// 		})
-// 		.catch(console.error);
-// }
