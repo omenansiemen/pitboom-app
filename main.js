@@ -5,6 +5,7 @@ const {
 	ipcMain,
 	Menu,
 	dialog,
+	globalShortcut,
 } = require('electron')
 const path = require('path')
 // const prompt = require('electron-prompt')
@@ -178,6 +179,12 @@ app.on('ready', () => {
 	mainWindow.webContents.on('did-finish-load', (event) => {
 		// Tässä voidaan poistaa splash screen sitten kun sellain on tehty
 	})
+
+	if (process.platform === 'darwin') {
+		globalShortcut.register('Command+Q', () => {
+			app.quit();
+		})
+	}
 })
 
 // Quit when all windows are closed.
