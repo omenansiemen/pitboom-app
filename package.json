@@ -17,13 +17,13 @@
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^9.0.4",
+    "electron": "^9.0.5",
     "electron-builder": "^21.2.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.2.2",
     "typescript": "^3.9.5",
     "webpack": "^4.43.0",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   },
   "build": {
     "appId": "play.pitboom.net",
