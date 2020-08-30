@@ -77,7 +77,7 @@ app.on('ready', () => {
 			submenu: [
 				{
 					label: 'Start',
-					accelerator: 'F8',
+					// accelerator: 'F8',
 					click: () => {
 						mainWindow.webContents.send('start')
 					},
