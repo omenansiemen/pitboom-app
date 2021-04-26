@@ -19,9 +19,8 @@ let mainWindow
 let showExitPrompt = true
 let readablePlayTime = 'too little'
 
-const defaultProtocol = 'https'
 const defaultHost = 'pitboom.net'
-const productionUrl = `${defaultProtocol}://${defaultHost}/`
+const productionUrl = `https://${defaultHost}/`
 
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
@@ -143,6 +142,9 @@ app.on('ready', () => {
 				event.returnValue = app.getPath('userData')
 				break
 			case 'version':
+				if (data.match(/http[s]?:\/\//) === null) {
+					data = `https://${data}/`
+				}
 				mainWindow.loadURL(data)
 				break
 			case 'electron':
