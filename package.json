@@ -17,7 +17,7 @@
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "^9.4.4",
+    "electron": "^12.0.5",
     "electron-builder": "^21.2.0",
     "source-map-loader": "^0.2.4",
     "ts-loader": "^6.2.2",
@@ -73,6 +73,6 @@
     "url": "tatu@pitboom:/home/git/pitboom-app.git"
   },
   "dependencies": {
-    "electron-store": "^4.0.0"
+    "electron-store": "^8.0.0"
   }
 }
