@@ -6,24 +6,24 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "electron": "electron .",
-    "pack": "webpack --mode production --env.platform=electron && electron-builder --dir",
-    "dist": "npm ci && webpack --mode production --env.platform=electron && electron-builder",
-    "dist:win": "npm ci && webpack --mode production --env.platform=electron && electron-builder --win",
-    "dist:mac": "npm ci && webpack --mode production --env.platform=electron && electron-builder --mac",
-    "dist:linux": "npm ci && webpack --mode production --env.platform=electron && electron-builder --linux",
-    "build": "webpack --mode production --env.prod",
-    "watch": "webpack --watch --mode development --env.dev"
+    "pack": "webpack --mode production --env prod && electron-builder --dir",
+    "dist": "npm ci && webpack --mode production --env prod && electron-builder",
+    "dist:win": "npm ci && webpack --mode production --env prod && electron-builder --win",
+    "dist:mac": "npm ci && webpack --mode production --env prod && electron-builder --mac",
+    "dist:linux": "npm ci && webpack --mode production --env prod && electron-builder --linux",
+    "build": "webpack --mode production --env prod",
+    "watch": "webpack --watch --mode development --env dev"
   },
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "devDependencies": {
-    "electron": "13.4.0",
-    "electron-builder": "^21.2.0",
+    "electron": "^15.2.0",
+    "electron-builder": "^22.13.1",
     "source-map-loader": "^0.2.4",
-    "ts-loader": "^6.2.2",
-    "typescript": "^3.9.9",
-    "webpack": "^4.46.0",
-    "webpack-cli": "^3.3.12"
+    "ts-loader": "^9.2.6",
+    "typescript": "^4.4.4",
+    "webpack": "^5.58.2",
+    "webpack-cli": "^4.9.0"
   },
   "build": {
     "appId": "play.pitboom.net",
