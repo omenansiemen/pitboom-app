@@ -72,36 +72,39 @@ app.on('ready', () => {
 
 	const menuTemplate = [
 		{
-			label: 'Game',
-			submenu: [
-				{
-					label: 'Start',
-					// accelerator: 'F8',
-					click: () => {
-						mainWindow.webContents.send('start')
-					},
-					// https://github.com/electron/electron/pull/18985
-					registerAccelerator: false // F8 key up listener in pb code
-				},
-				{
-					label: 'Toggle Chat',
-					// accelerator: 'F9',
-					click: () => {
-						mainWindow.webContents.send('toggle-chat')
-					},
-					// https://github.com/electron/electron/pull/18985
-					registerAccelerator: false // F9 key up listener in pb code
-				},
-				{
-					role: 'toggleFullScreen',
-				},
-				{
-					role: 'editMenu'
-				},
-			]
+			label: 'Start',
+			// accelerator: 'F8',
+			click: () => {
+				mainWindow.webContents.send('start')
+			},
+			// https://github.com/electron/electron/pull/18985
+			registerAccelerator: false // F8 key up listener in pb code
 		},
 		{
-			role: 'quit'
+			label: 'Toggle Chat',
+			// accelerator: 'F9',
+			click: () => {
+				mainWindow.webContents.send('toggle-chat')
+			},
+			// https://github.com/electron/electron/pull/18985
+			registerAccelerator: false // F9 key up listener in pb code
+		},
+		{
+			role: 'toggleFullScreen',
+		},
+		{
+			label: 'More',
+			submenu: [
+				{
+					role: 'editMenu',
+				},
+				{
+					role: 'toggleDevTools',
+				},
+				{
+					role: 'quit'
+				},
+			],
 		},
 	]
 	const menu = Menu.buildFromTemplate(menuTemplate);
