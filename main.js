@@ -26,20 +26,23 @@ const productionUrl = `https://${defaultHost}/`
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
 app.on('ready', () => {
-	// Create the browser window.
-	mainWindow = new BrowserWindow({
+	const options = {
 		width: 1847,
 		height: 1035,
 		icon: path.join(__dirname, 'public/Pitboom_logo_nowhite.png'),
 		webPreferences: {
 			preload: path.join(__dirname, 'dist/electron-renderer.bundle.js'),
 			nodeIntegration: false,
-			contextIsolation: false, // Window control events won't work if set true, for example closing window
+			contextIsolation: false,
 			backgroundThrottling: false,
 		},
 		backgroundColor: '#31363b',
-		// frame: false,
-	})
+	}
+	if (store.get('window.fullscreen') === true) {
+		options.fullscreen = true
+	}
+	// Create the browser window.
+	mainWindow = new BrowserWindow(options)
 
 	// Emitted when the window is closed.
 	mainWindow.on('closed', function () {
@@ -183,7 +186,12 @@ app.on('ready', () => {
 	mainWindow.webContents.on('did-finish-load', (event) => {
 		// Tässä voidaan poistaa splash screen sitten kun sellain on tehty
 	})
-
+	mainWindow.on('enter-full-screen', () => {
+		store.set('window.fullscreen', true)
+	})
+	mainWindow.on('leave-full-screen', () => {
+		store.set('window.fullscreen', false)
+	})
 })
 
 // Quit when all windows are closed.
