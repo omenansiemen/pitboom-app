@@ -16,14 +16,17 @@
   },
   "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
+  "dependencies": {
+    "electron-store": "8.0.1"
+  },
   "devDependencies": {
-    "electron": "^15.2.0",
-    "electron-builder": "^22.13.1",
-    "source-map-loader": "^0.2.4",
-    "ts-loader": "^9.2.6",
-    "typescript": "^4.4.4",
-    "webpack": "^5.58.2",
-    "webpack-cli": "^4.9.0"
+    "electron": "15.3.5",
+    "electron-builder": "22.13.1",
+    "source-map-loader": "3.0.1",
+    "ts-loader": "9.2.6",
+    "typescript": "4.5.4",
+    "webpack": "5.66.0",
+    "webpack-cli": "4.9.1"
   },
   "build": {
     "appId": "play.pitboom.net",
@@ -71,8 +74,5 @@
   "repository": {
     "type": "git",
     "url": "tatu@pitboom:/home/git/pitboom-app.git"
-  },
-  "dependencies": {
-    "electron-store": "^8.0.0"
   }
 }
