@@ -1,6 +1,6 @@
 {
   "name": "pitboom",
-  "version": "1.11.4",
+  "version": "1.11.5",
   "description": "PitBoom is a top-down-shooter game for the online multiplay",
   "main": "main.js",
   "scripts": {
@@ -14,7 +14,7 @@
     "build": "webpack --mode production --env prod",
     "watch": "webpack --watch --mode development --env dev"
   },
-  "author": "Tatu anttonen <tatu.anttonen@gmail.com>",  
+  "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
   "license": "UNLICENSED",
   "dependencies": {
     "electron-store": "8.0.1"
