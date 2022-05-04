@@ -1,7 +1,7 @@
 {
   "name": "pitboom",
   "version": "1.11.4",
-  "description": "Desktop application for pitBoom",
+  "description": "PitBoom is a top-down-shooter game for the online multiplay",
   "main": "main.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,7 +14,7 @@
     "build": "webpack --mode production --env prod",
     "watch": "webpack --watch --mode development --env dev"
   },
-  "author": "Tatu anttonen <tatu.anttonen@gmail.com>",
+  "author": "Tatu anttonen <tatu.anttonen@gmail.com>",  
   "license": "UNLICENSED",
   "dependencies": {
     "electron-store": "8.0.1"
@@ -30,7 +30,7 @@
   },
   "build": {
     "appId": "play.pitboom.net",
-    "productName": "pitBoom",
+    "productName": "PitBoom",
     "files": [
       "main.js",
       "dist/electron-renderer.bundle.js",
