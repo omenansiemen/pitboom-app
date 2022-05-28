@@ -7,6 +7,7 @@ const {
 	dialog,
 } = require('electron')
 const path = require('path')
+const os = require('os')
 // const prompt = require('electron-prompt')
 const Store = require('electron-store')
 const store = new Store()
@@ -146,6 +147,9 @@ app.on('ready', () => {
 				break
 			case 'get-app-user-data-path':
 				event.returnValue = app.getPath('userData')
+				break
+			case 'get-cpus':
+				event.returnValue = os.cpus()
 				break
 			case 'version':
 				if (data.match(/http[s]?:\/\//) === null) {
