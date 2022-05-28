@@ -5,7 +5,6 @@ interface IElectron {
 		ipc: Electron.IpcRenderer
 		app: {
 			version: string
-			userDataPath: string
 		}
 	}
 }
@@ -16,7 +15,6 @@ const obj: IElectron = {
 		ipc: ipcRenderer,
 		app: {
 			version: ipcRenderer.sendSync('pitboom', 'get-app-version'),
-			userDataPath: ipcRenderer.sendSync('pitboom', 'get-app-user-data-path'),
 		},
 	}
 }
