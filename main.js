@@ -118,61 +118,68 @@ app.on('ready', () => {
 	// otherwise actions will be run twice
 	mainWindow.setMenu(null)
 
+	const handlers = new Map([
+		['show-window', function (data) {
+			mainWindow.show()
+		}],
+		['show-window-inactive', function (data) {
+			mainWindow.showInactive()
+		}],
+		['close-window', function (data) {
+			mainWindow.close()
+		}],
+		['show-menu', function (data) {
+			Menu.getApplicationMenu().popup()
+		}],
+		['DOMContentLoaded', function (data) {
+			const url = mainWindow.webContents.getURL()
+			// Updating server url
+			store.set('server.url', url)
+			// config.json
+			// { "server": { "url": "http://pitboom.net/" } }
+		}],
+		['get-app-version', function (data) {
+			return app.getVersion()
+		}],
+		['get-app-user-data-path', function (data = 'userData') {
+			return app.getPath(data)
+		}],
+		['get-cpus', function (data) {
+			return os.cpus()
+		}],
+		['version', function (data) {
+			if (data.match(/http[s]?:\/\//) === null) {
+				data = `https://${data}/`
+			}
+			mainWindow.loadURL(data)
+		}],
+		['electron', function (data) {
+			if (data === 'devtools') {
+				mainWindow.webContents.openDevTools()
+			}
+		}],
+		['play-time', function (data) {
+			readablePlayTime = data
+		}],
+		['full-screen', function (data) {
+			const toggle = mainWindow.isFullScreen()
+			mainWindow.setFullScreen(!toggle)
+		}],
+	])
+
 	ipcMain.on('pitboom', (event, action, data) => {
-		switch (action) {
-			case 'show-window':
-				mainWindow.show()
-				break
-			case 'show-window-inactive':
-				mainWindow.showInactive()
-				break
-			case 'close-window':
-				mainWindow.close()
-				break
-			case 'show-menu':
-				Menu.getApplicationMenu().popup()
-				break
-			// case 'prompt-server-url':
-			// 	promptServerUrl(mainWindow)
-			// 	break
-			case 'DOMContentLoaded':
-				const url = mainWindow.webContents.getURL()
-				// Updating server url
-				store.set('server.url', url)
-				// config.json
-				// { "server": { "url": "http://pitboom.net/" } }
-				break
-			case 'get-app-version':
-				event.returnValue = app.getVersion()
-				break
-			case 'get-app-user-data-path':
-				event.returnValue = app.getPath('userData')
-				break
-			case 'get-cpus':
-				event.returnValue = os.cpus()
-				break
-			case 'version':
-				if (data.match(/http[s]?:\/\//) === null) {
-					data = `https://${data}/`
-				}
-				mainWindow.loadURL(data)
-				break
-			case 'electron':
-				if (data === 'devtools') {
-					mainWindow.webContents.openDevTools()
-				}
-				break
-			case 'play-time':
-				readablePlayTime = data
-				break
-			case 'full-screen':
-				const toggle = mainWindow.isFullScreen()
-				mainWindow.setFullScreen(!toggle)
-				break
-			default:
-				// Some event
-				console.warn('pitboom', action)
+		const handler = handlers.get(action)
+		if (typeof handler === 'function') {
+			event.returnValue = handler(data)
+		} else {
+			console.warn('pitboom', action)
 		}
+	})
+
+	handlers.forEach((handler, action) => {
+		ipcMain.handle(action, (event, data) => {
+			return handler(data)
+		})
 	})
 
 	const url = store.get('server.url', productionUrl)
