@@ -1,6 +1,6 @@
 {
   "name": "pitboom",
-  "version": "1.12.8",
+  "version": "1.12.9",
   "description": "PitBoom is a top-down-shooter game for the online multiplay",
   "main": "main.js",
   "scripts": {
